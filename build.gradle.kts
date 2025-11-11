@@ -15,6 +15,19 @@ version = "1.0.3" // Updated version
 //   platformVersion=2024.3.1
 // then you can read them here.
 
+intellijPlatform {
+    pluginVerification {
+        ides {
+            // Use the same platformType/platformVersion as the build target
+            val type = providers.gradleProperty("platformType").get()
+            val version = providers.gradleProperty("platformVersion").get()
+            ide(type, version)
+            // You can add more targets here if you need multi-IDE verification
+            // ide("IC", "2024.3.4")
+        }
+    }
+}
+
 repositories {
     mavenCentral()
     maven {
@@ -38,15 +51,6 @@ dependencies {
         // e.g. create("IC", "2024.3.1") or create(type, version)
         // This sets up the IntelliJ-based IDE distribution you build against.
         create(type, version)
-
-        // Configure Plugin Verifier target IDEs so :verifyPlugin can resolve an IDE
-        pluginVerification {
-            ides {
-                // Verify against the same IDE defined for compilation
-                // You can add more targets if needed, e.g. ide("IC", "2024.3.4")
-                ide(type, version)
-            }
-        }
 
         // Add any bundled plugin dependencies or marketplace plugins:
         // For example, the Terminal plugin ID is "org.jetbrains.plugins.terminal"
