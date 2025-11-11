@@ -39,6 +39,15 @@ dependencies {
         // This sets up the IntelliJ-based IDE distribution you build against.
         create(type, version)
 
+        // Configure Plugin Verifier target IDEs so :verifyPlugin can resolve an IDE
+        pluginVerification {
+            ides {
+                // Verify against the same IDE defined for compilation
+                // You can add more targets if needed, e.g. ide("IC", "2024.3.4")
+                ide(type, version)
+            }
+        }
+
         // Add any bundled plugin dependencies or marketplace plugins:
         // For example, the Terminal plugin ID is "org.jetbrains.plugins.terminal"
 //        bundledPlugin("org.jetbrains.plugins.terminal")
