@@ -4,11 +4,11 @@ plugins {
     id("org.jetbrains.kotlin.jvm") version "2.1.20"
 
     // IntelliJ Platform Gradle Plugin 2.x
-    id("org.jetbrains.intellij.platform") version "2.2.1"
+    id("org.jetbrains.intellij.platform") version "2.10.4"
 }
 
 group = "com.code2prompt"
-version = "1.0.3.2" // Updated version
+version = "1.0.3.3" // Updated version
 
 // If you’re using gradle.properties for platformType and platformVersion, e.g.:
 //   platformType=IC
@@ -72,7 +72,9 @@ tasks {
         targetCompatibility = "21"
     }
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions.jvmTarget = "21"
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+        }
     }
 
     patchPluginXml {
