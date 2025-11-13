@@ -1,6 +1,7 @@
 package com.code2prompt
 
 import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.project.DumbAware
 
@@ -12,15 +13,20 @@ import com.intellij.openapi.project.DumbAware
 class ClickablePopupGroup : DefaultActionGroup(), DumbAware {
 
     /**
-     * By returning false, we explicitly tell the IDE *not* to hide this group
-     * even if it has no visible child actions. This is the correct way to
-     * ensure the group remains in the menu, where it will appear grayed out if disabled.
+     * This is the classic method to prevent the IDE from hiding a group.
+     * By calling super.update() first, we allow the group to be correctly
+     * disabled if its children are disabled. Then, we force it to remain
+     * visible, ensuring it shows up as a grayed-out, unclickable item
+     * instead of disappearing entirely.
      */
-    override fun hideIfNoVisibleChildren(): Boolean = false
+    override fun update(e: AnActionEvent) {
+        super.update(e)
+        e.presentation.isVisible = true
+    }
 
     /**
      * Ensures that the update logic for this action group runs on a background thread,
-     * preventing any potential UI freezes, especially during indexing.
+     * preventing any potential UI freezes and adhering to modern plugin best practices.
      */
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
