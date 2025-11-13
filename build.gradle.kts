@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.code2prompt"
-version = "1.0.3" // Updated version
+version = "1.0.3.2" // Updated version
 
 // If you’re using gradle.properties for platformType and platformVersion, e.g.:
 //   platformType=IC
