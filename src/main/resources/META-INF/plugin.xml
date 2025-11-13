@@ -70,7 +70,8 @@
     <actions>
         <!-- Grouping actions is the modern and recommended approach for UI consistency and compatibility. -->
         <!-- This creates a "Code2Prompt" submenu in the Project View context menu. -->
-        <group id="Code2Prompt.ProjectViewActions" text="Code2Prompt" popup="true" icon="/icons/pluginIcon_green_20x20.svg">
+        <group id="Code2Prompt.ProjectViewActions" text="Code2Prompt" popup="true" icon="/icons/pluginIcon_green_20x20.svg"
+               class="com.intellij.openapi.actionSystem.DefaultActionGroup">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
 
             <action id="FilesToPromptAction" class="com.code2prompt.FilesToPromptAction" text="Files to Prompt" icon="/icons/pluginIcon_yellow_20x20.svg">
@@ -80,7 +81,8 @@
         </group>
 
         <!-- This creates a "Code2Prompt" submenu in the Editor context menu. -->
-        <group id="Code2Prompt.EditorActions" text="Code2Prompt" popup="true" icon="/icons/pluginIcon_green_20x20.svg">
+        <group id="Code2Prompt.EditorActions" text="Code2Prompt" popup="true" icon="/icons/pluginIcon_green_20x20.svg"
+               class="com.intellij.openapi.actionSystem.DefaultActionGroup">
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
 
             <action id="ErrorToPromptAction" class="com.code2prompt.ErrorToPromptAction" text="Error to Prompt" icon="/icons/pluginIcon_red_20x20.svg"/>
