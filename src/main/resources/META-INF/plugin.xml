@@ -67,24 +67,25 @@
         </p>
 ]]></change-notes>
 
-
-
-
-
     <actions>
-        <action id="FilesToPromptAction" class="com.code2prompt.FilesToPromptAction" text="Files to Prompt" icon="/icons/pluginIcon_yellow_20x20.svg">
+        <!-- Grouping actions is the modern and recommended approach for UI consistency and compatibility. -->
+        <!-- This creates a "Code2Prompt" submenu in the Project View context menu. -->
+        <group id="Code2Prompt.ProjectViewActions" text="Code2Prompt" popup="true" icon="/icons/pluginIcon_green_20x20.svg">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
-            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt q"/>
-        </action>
-        <action id="CreateCopyIgnoreAction" class="com.code2prompt.CreateToPromptIgnoreAction" text="Create .topromptignore" icon="/icons/pluginIcon_blue_20x20.svg">
-            <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
-        </action>
-        <action id="ErrorToPromptAction" class="com.code2prompt.ErrorToPromptAction" text="Error to Prompt" icon="/icons/pluginIcon_red_20x20.svg">
+
+            <action id="FilesToPromptAction" class="com.code2prompt.FilesToPromptAction" text="Files to Prompt" icon="/icons/pluginIcon_yellow_20x20.svg">
+                <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt q"/>
+            </action>
+            <action id="CreateCopyIgnoreAction" class="com.code2prompt.CreateToPromptIgnoreAction" text="Create .topromptignore" icon="/icons/pluginIcon_blue_20x20.svg"/>
+        </group>
+
+        <!-- This creates a "Code2Prompt" submenu in the Editor context menu. -->
+        <group id="Code2Prompt.EditorActions" text="Code2Prompt" popup="true" icon="/icons/pluginIcon_green_20x20.svg">
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
-        </action>
-        <action id="ErrorToPromptNoCodeAction" class="com.code2prompt.ErrorToPromptNoCodeAction" text="Error to Prompt - No Code" icon="/icons/pluginIcon_purple_20x20.svg">
-            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
-        </action>
+
+            <action id="ErrorToPromptAction" class="com.code2prompt.ErrorToPromptAction" text="Error to Prompt" icon="/icons/pluginIcon_red_20x20.svg"/>
+            <action id="ErrorToPromptNoCodeAction" class="com.code2prompt.ErrorToPromptNoCodeAction" text="Error to Prompt - No Code" icon="/icons/pluginIcon_purple_20x20.svg"/>
+        </group>
     </actions>
 
     <!-- Product and plugin compatibility requirements.
