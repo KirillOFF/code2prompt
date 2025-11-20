@@ -1,6 +1,14 @@
+### 🚀 Code2Prompt – Unreleased – What's New?
+
+ 🔹 **Bug Fixes & Code Refinements**
+
+### 🚀 Code2Prompt – Version 1.0.5 – What's New?
+
+ 🔹 **Bug Fixes & Code Refinements**
+
 ### 🚀 Code2Prompt – Version 1.0.2 – What's New?
 
-🔹 **Bug Fixes & Code Refinements:**
+ 🔹 **Bug Fixes & Code Refinements:**
 - 🛠️ **Fixed Formatting Issues in Error Messages:**
 	- Moved **file path information** placement for better readability in copied error prompts.
 	- Ensured **correct Markdown formatting** for file contents in LLM-ready prompts.

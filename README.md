@@ -1,6 +1,8 @@
 # Code2Prompt 📋🚀
 
+<!-- Plugin description -->
 **Code2Prompt** is a JetBrains IntelliJ plugin that allows developers to copy the context of their projects including full file paths, contents, and error messages from IntelliJ-based IDEs to the clipboard in a format optimized for Large Language Models (LLMs).
+<!-- Plugin description end -->
 
 ## 📥 Installation
 

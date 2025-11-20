@@ -3,35 +3,54 @@ package com.code2prompt
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.ide.CopyPasteManager
+import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Condition
+import com.intellij.util.containers.ContainerUtil
 import com.intellij.openapi.vfs.VirtualFile
 import java.awt.datatransfer.StringSelection
 import java.io.File
 import java.nio.charset.StandardCharsets
 import java.util.regex.Pattern
 
-class FilesToPromptAction : AnAction() {
+class FilesToPromptAction : DumbAwareAction() {
 
     companion object {
+        private val LOG = Logger.getInstance(FilesToPromptAction::class.java)
         private val NOTIFICATION_GROUP = NotificationGroupManager.getInstance()
             .getNotificationGroup("FilesToPromptGroup")
+
+        private val FILE_WITH_CONTENT: Condition<VirtualFile?> = Condition { f ->
+            f != null && !f.fileType.isBinary
+        }
     }
 
     override fun actionPerformed(e: AnActionEvent) {
+        LOG.info("FilesToPromptAction.actionPerformed() called")
+
+        val project = e.project
+        if (project == null || project.isDefault) {
+            LOG.warn("Action cancelled: project is null or default")
+            return
+        }
+
         // Get the selected files or folders
         val dataContext = e.dataContext
         val selectedFiles = CommonDataKeys.VIRTUAL_FILE_ARRAY.getData(dataContext)
 
+        LOG.debug("Selected files: ${selectedFiles?.size ?: 0}")
+
         if (selectedFiles.isNullOrEmpty()) {
+            LOG.debug("No files selected, returning")
             return
         }
 
-        // Load ignore patterns from .topromptignore file
-        val project = e.project ?: return
+        LOG.debug("Selected files: " + selectedFiles.joinToString { it.path })
         val ignorePatterns = loadIgnorePatterns(project)
 
         // Collect the paths and contents
@@ -48,13 +67,32 @@ class FilesToPromptAction : AnAction() {
         CopyPasteManager.getInstance().setContents(StringSelection(result))
 
         // Notify the user
-        NOTIFICATION_GROUP.createNotification(
+NOTIFICATION_GROUP.createNotification(
             "Files data copied to clipboard.",
             NotificationType.INFORMATION
         ).notify(project)
     }
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
+
+    override fun update(e: AnActionEvent) {
+        val project = e.project
+        if (project == null || project.isDefault) {
+            e.presentation.isEnabledAndVisible = false
+            return
+        }
+
+        val files = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
+        if (files.isNullOrEmpty()) {
+            e.presentation.isEnabledAndVisible = false
+            return
+        }
+
+        val hasDirectory = files.any { it.isDirectory }
+        val hasFilesWithContent = ContainerUtil.exists(files, FILE_WITH_CONTENT)
+
+        e.presentation.isEnabledAndVisible = hasDirectory || hasFilesWithContent
+    }
 
     val MAX_FILE_SIZE: Long = (5 * 1024 * 1024 // 5 MB
             ).toLong()
