@@ -77,7 +77,7 @@ intellijPlatform {
                 renderItem(
                     (getOrNull(pluginVersion) ?: getUnreleased())
                         .withHeader(false)
-                        .withEmptySections(false),
+                        .withEmptySections(true),
                     Changelog.OutputType.HTML,
                 )
             }
