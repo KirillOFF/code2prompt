@@ -5,9 +5,12 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Condition
+import com.intellij.util.containers.ContainerUtil
 import com.intellij.openapi.vfs.VirtualFile
 import java.awt.datatransfer.StringSelection
 import java.io.File
@@ -19,9 +22,18 @@ class FilesToPromptAction : DumbAwareAction() {
     companion object {
         private val NOTIFICATION_GROUP = NotificationGroupManager.getInstance()
             .getNotificationGroup("FilesToPromptGroup")
+
+        private val FILE_WITH_CONTENT: Condition<VirtualFile?> = Condition { f ->
+            f != null && !f.fileType.isBinary
+        }
     }
 
     override fun actionPerformed(e: AnActionEvent) {
+        val project = e.project
+        if (project == null || project.isDefault) {
+            return
+        }
+
         // Get the selected files or folders
         val dataContext = e.dataContext
         val selectedFiles = CommonDataKeys.VIRTUAL_FILE_ARRAY.getData(dataContext)
@@ -29,9 +41,6 @@ class FilesToPromptAction : DumbAwareAction() {
         if (selectedFiles.isNullOrEmpty()) {
             return
         }
-
-        // Load ignore patterns from .topromptignore file
-        val project = e.project ?: return
         val ignorePatterns = loadIgnorePatterns(project)
 
         // Collect the paths and contents
@@ -58,11 +67,29 @@ NOTIFICATION_GROUP.createNotification(
 
     override fun update(e: AnActionEvent) {
         val project = e.project
-        val selectedFiles = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
-        
-        // Only show when project exists and files are selected
-        e.presentation.isEnabledAndVisible = project != null && 
-                                           !selectedFiles.isNullOrEmpty()
+        if (project == null || project.isDefault) {
+            e.presentation.isEnabledAndVisible = false
+            return
+        }
+
+        val editor: Editor? = e.getData(CommonDataKeys.EDITOR)
+        val file: VirtualFile? = e.getData(CommonDataKeys.VIRTUAL_FILE)
+        val files: Array<VirtualFile>? = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
+
+        val hasFilesWithContent = FILE_WITH_CONTENT.value(file) ||
+                                 (files != null && ContainerUtil.exists(files, FILE_WITH_CONTENT))
+
+        val isTerminal = editor != null && editor.isViewer()
+        val isDirectory = file != null && file.isDirectory
+
+        // Show action if:
+        // - In terminal, or
+        // - Directory selected, or
+        // - Has files with content and editor is not empty
+        val shouldShow = isTerminal || isDirectory ||
+                        (hasFilesWithContent && (editor == null || editor.document.textLength > 0))
+
+        e.presentation.isEnabledAndVisible = shouldShow
     }
 
     val MAX_FILE_SIZE: Long = (5 * 1024 * 1024 // 5 MB
