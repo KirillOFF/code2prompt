@@ -1,10 +1,10 @@
 ### 🚀 Code2Prompt – Unreleased – What's New?
 
-<!-- Add new changes here -->
+ 🔹 **Bug Fixes & Code Refinements**
 
 ### 🚀 Code2Prompt – Version 1.0.5 – What's New?
 
-<!-- Add new changes here -->
+ 🔹 **Bug Fixes & Code Refinements**
 
 ### 🚀 Code2Prompt – Version 1.0.2 – What's New?
 
