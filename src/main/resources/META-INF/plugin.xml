@@ -68,9 +68,11 @@
 
 
 
-    <actions>
+<actions>
         <action id="FilesToPromptAction" class="com.code2prompt.FilesToPromptAction" text="Files to Prompt" icon="/icons/pluginIcon_yellow_20x20.svg">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+            <add-to-group group-id="EditorTabPopupMenu" anchor="last"/>
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt q"/>
         </action>
     </actions>

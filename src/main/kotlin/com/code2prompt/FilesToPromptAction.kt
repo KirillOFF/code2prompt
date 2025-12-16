@@ -14,7 +14,7 @@ import java.io.File
 import java.nio.charset.StandardCharsets
 import java.util.regex.Pattern
 
-class FilesToPromptAction : AnAction() {
+class FilesToPromptAction : DumbAwareAction() {
 
     companion object {
         private val NOTIFICATION_GROUP = NotificationGroupManager.getInstance()
@@ -54,7 +54,16 @@ class FilesToPromptAction : AnAction() {
         ).notify(project)
     }
 
-    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
+override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
+
+    override fun update(e: AnActionEvent) {
+        val project = e.project
+        val selectedFiles = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
+        
+        // Only show when project exists and files are selected
+        e.presentation.isEnabledAndVisible = project != null && 
+                                           !selectedFiles.isNullOrEmpty()
+    }
 
     val MAX_FILE_SIZE: Long = (5 * 1024 * 1024 // 5 MB
             ).toLong()
