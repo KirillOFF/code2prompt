@@ -5,6 +5,7 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.DumbAwareAction
@@ -20,6 +21,7 @@ import java.util.regex.Pattern
 class FilesToPromptAction : DumbAwareAction() {
 
     companion object {
+        private val LOG = Logger.getInstance(FilesToPromptAction::class.java)
         private val NOTIFICATION_GROUP = NotificationGroupManager.getInstance()
             .getNotificationGroup("FilesToPromptGroup")
 
@@ -29,8 +31,11 @@ class FilesToPromptAction : DumbAwareAction() {
     }
 
     override fun actionPerformed(e: AnActionEvent) {
+        LOG.info("FilesToPromptAction.actionPerformed() called")
+
         val project = e.project
         if (project == null || project.isDefault) {
+            LOG.warn("Action cancelled: project is null or default")
             return
         }
 
@@ -38,7 +43,10 @@ class FilesToPromptAction : DumbAwareAction() {
         val dataContext = e.dataContext
         val selectedFiles = CommonDataKeys.VIRTUAL_FILE_ARRAY.getData(dataContext)
 
+        LOG.debug("Selected files: ${selectedFiles?.size ?: 0}")
+
         if (selectedFiles.isNullOrEmpty()) {
+            LOG.debug("No files selected, returning")
             return
         }
         val ignorePatterns = loadIgnorePatterns(project)
@@ -66,8 +74,13 @@ NOTIFICATION_GROUP.createNotification(
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
+        LOG.debug("FilesToPromptAction.update() called")
+
         val project = e.project
+        LOG.debug("Project: $project, isDefault: ${project?.isDefault}")
+
         if (project == null || project.isDefault) {
+            LOG.debug("Hiding action: project is null or default")
             e.presentation.isEnabledAndVisible = false
             return
         }
@@ -76,20 +89,16 @@ NOTIFICATION_GROUP.createNotification(
         val file: VirtualFile? = e.getData(CommonDataKeys.VIRTUAL_FILE)
         val files: Array<VirtualFile>? = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
 
-        val hasFilesWithContent = FILE_WITH_CONTENT.value(file) ||
-                                 (files != null && ContainerUtil.exists(files, FILE_WITH_CONTENT))
+        LOG.debug("Editor: $editor, File: $file, Files array size: ${files?.size}")
 
-        val isTerminal = editor != null && editor.isViewer()
-        val isDirectory = file != null && file.isDirectory
+        // Simplified logic for debugging - show if any files are selected
+        val hasAnyFiles = file != null || (files != null && files.isNotEmpty())
+        LOG.debug("hasAnyFiles: $hasAnyFiles")
 
-        // Show action if:
-        // - In terminal, or
-        // - Directory selected, or
-        // - Has files with content and editor is not empty
-        val shouldShow = isTerminal || isDirectory ||
-                        (hasFilesWithContent && (editor == null || editor.document.textLength > 0))
+        // Show action if any files are selected (simplified for debugging)
+        e.presentation.isEnabledAndVisible = hasAnyFiles
 
-        e.presentation.isEnabledAndVisible = shouldShow
+        LOG.debug("Action visibility set to: ${e.presentation.isEnabledAndVisible}")
     }
 
     val MAX_FILE_SIZE: Long = (5 * 1024 * 1024 // 5 MB

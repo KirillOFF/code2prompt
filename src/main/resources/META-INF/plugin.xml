@@ -75,6 +75,18 @@
             <add-to-group group-id="EditorTabPopupMenu" anchor="last"/>
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt q"/>
         </action>
+
+        <!-- Debug action - should always be visible -->
+        <action id="TestAction" class="com.code2prompt.TestAction">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </action>
+
+        <!-- Simplified version for debugging -->
+        <action id="SimpleFilesToPromptAction" class="com.code2prompt.FilesToPromptAction" text="Files to Prompt (Debug)" icon="/icons/pluginIcon_yellow_20x20.svg">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="first"/>
+        </action>
     </actions>
 
     <!-- Product and plugin compatibility requirements.
