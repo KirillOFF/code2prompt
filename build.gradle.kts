@@ -2,6 +2,7 @@ plugins {
     id("java") // Java support
     alias(libs.plugins.kotlin) // Kotlin support
     alias(libs.plugins.intelliJPlatform) // IntelliJ Platform Gradle Plugin
+    alias(libs.plugins.changelog) // Changelog
 }
 
 group = providers.gradleProperty("pluginGroup").get()
@@ -72,4 +73,9 @@ intellijPlatform {
 
 }
 
+// Configure changelog plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
+changelog {
+    version.set(providers.gradleProperty("pluginVersion"))
+    path.set(project.file("CHANGELOG.md").absolutePath)
+}
 
