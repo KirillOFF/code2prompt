@@ -3,10 +3,10 @@ package com.code2prompt
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.ide.CopyPasteManager
+import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import java.awt.datatransfer.StringSelection
@@ -48,13 +48,13 @@ class FilesToPromptAction : DumbAwareAction() {
         CopyPasteManager.getInstance().setContents(StringSelection(result))
 
         // Notify the user
-        NOTIFICATION_GROUP.createNotification(
+NOTIFICATION_GROUP.createNotification(
             "Files data copied to clipboard.",
             NotificationType.INFORMATION
         ).notify(project)
     }
 
-override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
         val project = e.project

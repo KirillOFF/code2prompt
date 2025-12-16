@@ -74,7 +74,7 @@ tasks {
     }
 
     patchPluginXml {
-        sinceBuild.set("251") // Keep compatible with older versions if desired
+sinceBuild.set("241") // Keep compatible with older versions if desired
         untilBuild.set("253.*") // Set upper bound to 2025.3 branch (Rider 2025.3)
     }
 
