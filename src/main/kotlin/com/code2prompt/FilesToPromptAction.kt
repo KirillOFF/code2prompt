@@ -88,8 +88,10 @@ NOTIFICATION_GROUP.createNotification(
             return
         }
 
-        val hasTextFiles = ContainerUtil.exists(files, FILE_WITH_CONTENT)
-        e.presentation.isEnabledAndVisible = hasTextFiles
+        val hasDirectory = files.any { it.isDirectory }
+        val hasFilesWithContent = ContainerUtil.exists(files, FILE_WITH_CONTENT)
+
+        e.presentation.isEnabledAndVisible = hasDirectory || hasFilesWithContent
     }
 
     val MAX_FILE_SIZE: Long = (5 * 1024 * 1024 // 5 MB
