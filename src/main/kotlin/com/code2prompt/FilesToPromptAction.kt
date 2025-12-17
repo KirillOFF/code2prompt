@@ -49,8 +49,6 @@ class FilesToPromptAction : DumbAwareAction() {
             LOG.debug("No files selected, returning")
             return
         }
-
-        LOG.debug("Selected files: " + selectedFiles.joinToString { it.path })
         val ignorePatterns = loadIgnorePatterns(project)
 
         // Collect the paths and contents
@@ -76,20 +74,31 @@ NOTIFICATION_GROUP.createNotification(
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
+        LOG.debug("FilesToPromptAction.update() called")
+
         val project = e.project
+        LOG.debug("Project: $project, isDefault: ${project?.isDefault}")
+
         if (project == null || project.isDefault) {
+            LOG.debug("Hiding action: project is null or default")
             e.presentation.isEnabledAndVisible = false
             return
         }
 
-        val files = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
-        if (files.isNullOrEmpty()) {
-            e.presentation.isEnabledAndVisible = false
-            return
-        }
+        val editor: Editor? = e.getData(CommonDataKeys.EDITOR)
+        val file: VirtualFile? = e.getData(CommonDataKeys.VIRTUAL_FILE)
+        val files: Array<VirtualFile>? = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
 
-        val hasTextFiles = ContainerUtil.exists(files, FILE_WITH_CONTENT)
-        e.presentation.isEnabledAndVisible = hasTextFiles
+        LOG.debug("Editor: $editor, File: $file, Files array size: ${files?.size}")
+
+        // Simplified logic for debugging - show if any files are selected
+        val hasAnyFiles = file != null || (files != null && files.isNotEmpty())
+        LOG.debug("hasAnyFiles: $hasAnyFiles")
+
+        // Show action if any files are selected (simplified for debugging)
+        e.presentation.isEnabledAndVisible = hasAnyFiles
+
+        LOG.debug("Action visibility set to: ${e.presentation.isEnabledAndVisible}")
     }
 
     val MAX_FILE_SIZE: Long = (5 * 1024 * 1024 // 5 MB
